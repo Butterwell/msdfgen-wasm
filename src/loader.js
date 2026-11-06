@@ -6,6 +6,10 @@
  * @property {(codepoint:number, size:number, pxrange:number) => (object|null)} generateGlyph
  *   Renders a glyph em-normalized; returns flat fields { width, height, rgba, advance,
  *   translateX, translateY, boundsL, boundsB, boundsR, boundsT, range } or null if absent.
+ * @property {(codepoint:number, size:number, pxrange:number) => (object|null)} generateMtsdfGlyph
+ *   RGBA MTSDF with true signed distance in alpha.
+ * @property {(glyphIndex:number, size:number, pxrange:number) => (object|null)} generateMtsdfGlyphByIndex
+ *   Uses font glyph indices from a shaping engine (e.g. HarfBuzz), not Unicode code points.
  * @property {() => boolean} ok
  * @property {() => void} delete
  */
