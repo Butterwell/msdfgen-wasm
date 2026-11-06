@@ -53,6 +53,17 @@ public:
         return generateByCodepoint(codepoint, size, pxrange, true);
     }
 
+    // Returns the font's cmap mapping, for verification and non-shaped callers.
+    // Shaping engines remain responsible for ligatures, clusters, and positioning.
+    int glyphIndexForCodepoint(int codepoint) {
+        if (!handle_ || codepoint < 0 || codepoint > 0x10ffff ||
+            (codepoint >= 0xd800 && codepoint <= 0xdfff)) return 0;
+        msdfgen::GlyphIndex index(0);
+        if (!msdfgen::getGlyphIndex(index, handle_, static_cast<msdfgen::unicode_t>(codepoint)))
+            return 0;
+        return static_cast<int>(index.getIndex());
+    }
+
     // HarfBuzz supplies font glyph indices, not Unicode code points.
     val generateMtsdfGlyphByIndex(int glyphIndex, int size, double pxrange) {
         if (!handle_ || glyphIndex <= 0) return val::null();
@@ -177,5 +188,6 @@ EMSCRIPTEN_BINDINGS(msdfgen_module) {
         .function("ok", &Font::ok)
         .function("generateGlyph", &Font::generateGlyph)
         .function("generateMtsdfGlyph", &Font::generateMtsdfGlyph)
-        .function("generateMtsdfGlyphByIndex", &Font::generateMtsdfGlyphByIndex);
+        .function("generateMtsdfGlyphByIndex", &Font::generateMtsdfGlyphByIndex)
+        .function("glyphIndexForCodepoint", &Font::glyphIndexForCodepoint);
 }
