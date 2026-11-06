@@ -19,6 +19,13 @@ test('MTSDF generation has true-distance alpha and an independent glyph-index in
         for (let i = 3; i < glyph.rgba.length; i += 4) alpha.add(glyph.rgba[i]);
         assert.ok(alpha.size > 2, 'true distance alpha must not be constant');
         assert.ok(glyph.advance > 0);
+        const index = font.glyphIndexForCodepoint(0x41);
+        assert.ok(index > 0, 'cmap resolves capital A');
+        const byIndex = font.generateMtsdfGlyphByIndex(index, 64, 8);
+        assert.ok(byIndex);
+        assert.deepEqual(byIndex.rgba, glyph.rgba, 'font-index and codepoint MTSDF agree');
+        assert.equal(byIndex.advance, glyph.advance);
+        assert.equal(font.glyphIndexForCodepoint(0xd800), 0);
         assert.equal(font.generateMtsdfGlyphByIndex(0, 64, 8), null);
         assert.equal(font.generateMtsdfGlyph(-1, 64, 8), null);
         assert.equal(font.generateMtsdfGlyph(0xd800, 64, 8), null);
