@@ -2,6 +2,10 @@
 # so consumers need no toolchain). Pin the emsdk version so builds are reproducible.
 name: build
 
+# The main-branch build publishes the generated WASM artifact to this repository.
+permissions:
+  contents: write
+
 on:
   workflow_dispatch: {}
   pull_request:
