@@ -25,6 +25,9 @@ test('MTSDF generation has true-distance alpha and an independent glyph-index in
         assert.ok(byIndex);
         assert.deepEqual(byIndex.rgba, glyph.rgba, 'font-index and codepoint MTSDF agree');
         assert.equal(byIndex.advance, glyph.advance);
+        assert.equal(byIndex.range, glyph.range);
+        assert.equal(byIndex.translateX, glyph.translateX);
+        assert.equal(byIndex.translateY, glyph.translateY);
         assert.equal(font.glyphIndexForCodepoint(0xd800), 0);
         assert.equal(font.generateMtsdfGlyphByIndex(0, 64, 8), null);
         assert.equal(font.generateMtsdfGlyph(-1, 64, 8), null);
