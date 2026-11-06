@@ -123,30 +123,30 @@ private:
                     }
                 }
             } else {
-            std::vector<float> sdf(static_cast<size_t>(size) * size * 3);
-            msdfgen::BitmapRef<float, 3> ref(sdf.data(), size, size);
-            msdfgen::generateMSDF(ref, shape,
-                msdfgen::Projection(msdfgen::Vector2(scale, scale), msdfgen::Vector2(tx, ty)),
-                msdfgen::Range(rangeEm));
-            // Scanline pass (what the msdfgen CLI does by default when built without Skia): flip
-            // any texel whose sign disagrees with the non-zero fill. A no-op for well-formed
-            // glyphs; it cleans up stray wedges/streaks that cusps and near-degenerate edges
-            // produce, and is the safety net when resolveOverlaps() could not re-chain a shape.
-            msdfgen::distanceSignCorrection(ref, shape,
-                msdfgen::Projection(msdfgen::Vector2(scale, scale), msdfgen::Vector2(tx, ty)),
-                msdfgen::FILL_NONZERO);
+                std::vector<float> sdf(static_cast<size_t>(size) * size * 3);
+                msdfgen::BitmapRef<float, 3> ref(sdf.data(), size, size);
+                msdfgen::generateMSDF(ref, shape,
+                    msdfgen::Projection(msdfgen::Vector2(scale, scale), msdfgen::Vector2(tx, ty)),
+                    msdfgen::Range(rangeEm));
+                // Scanline pass (what the msdfgen CLI does by default when built without Skia): flip
+                // any texel whose sign disagrees with the non-zero fill. A no-op for well-formed
+                // glyphs; it cleans up stray wedges/streaks that cusps and near-degenerate edges
+                // produce, and is the safety net when resolveOverlaps() could not re-chain a shape.
+                msdfgen::distanceSignCorrection(ref, shape,
+                    msdfgen::Projection(msdfgen::Vector2(scale, scale), msdfgen::Vector2(tx, ty)),
+                    msdfgen::FILL_NONZERO);
 
-            // Pack to top-down RGBA (msdfgen bitmaps are bottom-up by default).
-            for (int y = 0; y < size; ++y) {
-                for (int x = 0; x < size; ++x) {
-                    const float *px = ref(x, size - 1 - y);
-                    const size_t o = (static_cast<size_t>(y) * size + x) * 4;
-                    rgba[o + 0] = msdfgen::pixelFloatToByte(px[0]);
-                    rgba[o + 1] = msdfgen::pixelFloatToByte(px[1]);
-                    rgba[o + 2] = msdfgen::pixelFloatToByte(px[2]);
-                    rgba[o + 3] = 255;
+                // Pack to top-down RGBA (msdfgen bitmaps are bottom-up by default).
+                for (int y = 0; y < size; ++y) {
+                    for (int x = 0; x < size; ++x) {
+                        const float *px = ref(x, size - 1 - y);
+                        const size_t o = (static_cast<size_t>(y) * size + x) * 4;
+                        rgba[o + 0] = msdfgen::pixelFloatToByte(px[0]);
+                        rgba[o + 1] = msdfgen::pixelFloatToByte(px[1]);
+                        rgba[o + 2] = msdfgen::pixelFloatToByte(px[2]);
+                        rgba[o + 3] = 255;
+                    }
                 }
-            }
             }
         }
 
